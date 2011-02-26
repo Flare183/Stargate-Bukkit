@@ -11,38 +11,38 @@ public class SignPost {
 	private Blox parent;
 	private Blox block;
 	private World world;
-	
+
 	public SignPost(World world, Sign sign) {
 		this.world = world;
 		this.block = new Blox(world, sign.getX(), sign.getY(), sign.getZ());
 	}
-	
+
 	public SignPost(Blox block) {
 		this.block = block;
 		this.world = block.getWorld();
 	}
-	
+
 	public Block getParent() {
 		if (parent == null) findParent();
 		return parent.getBlock();
 	}
-	
+
 	public Block getBlock() {
 		return block.getBlock();
 	}
-	
+
 	public String getText(int index) {
 		Sign sign = findSign();
 		if (sign == null) return "";
 		return sign.getLine(index);
 	}
-	
+
 	public void setText(int index, String value) {
 		Sign sign = findSign();
 		if (sign == null) return;
 		sign.setLine(index, value);
 	}
-	
+
 	public String getIdText() {
 		Sign sign = findSign();
 		if (sign == null) return "";
@@ -55,22 +55,22 @@ public class SignPost {
 		result.append(getText(2));
 		result.append("\n");
 		result.append(getText(3));
-		
+
 		return result.toString().toLowerCase();
 	}
-	
+
 	public void update() {
 		Sign sign = findSign();
 		if (sign == null) return;
 		sign.update();
 	}
-	
+
 	private void findParent() {
 		Sign sign = findSign();
 		int offsetX = 0;
 		int offsetY = 0;
 		int offsetZ = 0;
-		
+
 		if (block.getBlock().getType() == Material.WALL_SIGN) {
 			if (block.getData() == 0x2) {
 				offsetZ = 1;
@@ -94,7 +94,7 @@ public class SignPost {
 		}
 		parent = new Blox(world, sign.getX() + offsetX, sign.getY() + offsetY, sign.getZ() + offsetZ);
 	}
-	
+
 	private Sign findSign() {
 		try {
 			BlockState sign = this.world.getBlockAt(block.getX(), block.getY(), block.getZ()).getState();
@@ -103,13 +103,13 @@ public class SignPost {
 		} catch (Exception e) {}
 		return null;
 	}
-	
+
 	public static SignPost getFromBlock(Block block) {
 		BlockState state = block.getState();
 		if (!(state instanceof Sign)) return null;
 		return new SignPost(block.getWorld(), (Sign)state);
 	}
-	
+
 	public static SignPost getFromLocation(Location location) {
 		return getFromBlock(location.getWorld().getBlockAt((int)location.getX(), (int)location.getY(), (int)location.getZ()));
 	}
